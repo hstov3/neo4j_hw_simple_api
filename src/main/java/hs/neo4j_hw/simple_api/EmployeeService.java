@@ -9,12 +9,14 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author Harry
+ * Service layer class to interact to underlying store.  
+ * 
+ * @author Harry Stovall
  *
  */
 final class EmployeeService {
 	 
-    private static Map<Integer, Employee> employees = new HashMap<Integer, Employee>();
+    private static final Map<Integer, Employee> employees = new HashMap<>();
 	 
     EmployeeService() { }
 	
@@ -22,9 +24,8 @@ final class EmployeeService {
     	return employees.get(id);
     }
 
-    Employee add(int empl_id, final String name) {
-    	Employee empl = new Employee(empl_id, name);
-    	employees.put(empl_id, empl);
+    Employee add(final Employee empl) {
+    	employees.put(empl.getEmp_id(), empl);
     	return empl;
     }
 

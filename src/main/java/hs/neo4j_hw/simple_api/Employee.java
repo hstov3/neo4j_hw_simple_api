@@ -1,4 +1,4 @@
-/**
+/*
  * 
  */
 package hs.neo4j_hw.simple_api;
