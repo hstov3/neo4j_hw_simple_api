@@ -6,46 +6,75 @@ import spark.Response;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import static spark.Spark.get;
 import static spark.Spark.post;
 
 class VersionObject {
-	// TODO - handleVersionReq() - provide real implementation
-	private final String version = "tbd";
+	private final String appVersion;
 	
-	public final String getVersion() { 
-		return version; 
+	public VersionObject() {
+		Package pkg = VersionObject.class.getPackage();
+		appVersion = pkg.getImplementationTitle() + "-" + pkg.getImplementationVersion();
+	}
+	
+	public final String getAppVersion() { 
+		return appVersion;
 	}
 }
 
 
 class ApiServer {
 
-	private final EmployeeService employeeSvc;
+	private static final Logger LOG = LoggerFactory.getLogger(ApiServer.class);
 	private static final Gson GSON = new Gson();
+	private final Neo4jEmployeeService employeeSvc;
 	
 	ApiServer() {
-		this.employeeSvc = new EmployeeService();
+		Neo4jEmployeeService initializedEmployeeSvc = null;
+		try {
+		    Neo4jDriverConfig neo4jCfg = new Neo4jDriverConfig();
+		    initializedEmployeeSvc = new Neo4jEmployeeService(neo4jCfg);
+		} catch (Exception e) {
+			LOG.error("failed to initialize EmployeeService object", e);
+		}
+		this.employeeSvc = initializedEmployeeSvc;
 		registerRoutes();
 	}
 	
 	private Object handleVersionReq(Request req, Response res) {
-		// TODO - handleVersionReq() - provide real implementation
 		res.type("application/json");
 		return new VersionObject();
 	}
 	
 	private Object handleEmployeeCreateReq(Request req, Response res) {
 		res.type("application/json");
-	    Employee empl = new Gson().fromJson(req.body(), Employee.class);
-	    employeeSvc.add(empl);
+	    Employee empl = null;
+	    try {
+	    	empl = new Gson().fromJson(req.body(), Employee.class);
+	        employeeSvc.add(empl);
+	        res.status(201); // 201 for Created
+	    } catch (Exception e) {
+	    	LOG.error("failure handling Create Employee request", e);
+	    	res.status(500);
+	    	res.body(e.getMessage());
+	    }
 		return empl;
 	}
 	
 	private Object handleEmployeeListReq(Request req, Response res) {
 		res.type("application/json");
-		List<Employee> employeeList = this.employeeSvc.findAll();
-		String gsonList = GSON.toJson(employeeList);
+		String gsonList = "";
+		try {
+		    List<Employee> employeeList = this.employeeSvc.findAll();
+		    gsonList = GSON.toJson(employeeList);
+		} catch (Exception e) {
+	    	LOG.error("failure handling Create Employee request", e);
+	    	res.status(500);
+	    	res.body(e.getMessage());			
+		}
 		return gsonList;
 	}
 	

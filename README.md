@@ -6,6 +6,10 @@ This is the deliverable for development of a simple API demonstrating access to 
 
 ## Usage
 
+### Running locally
+
+After building the application with maven and starting the app, the API can be tested using Postman by importing the collection of http calls at [neo4j-hw-local-tests](https://www.getpostman.com/collections/159534c1be2cbfeb9421).
+
 ```java
 /**
  * The class that defines a Spark Web Framework route
@@ -44,7 +48,7 @@ The API - REST or GraphQL will support 2 operations:
 1. **Return all Employee nodes to the client**. Any format is fine.
 	For the actual implementation use Java (Spring boot, Dropwizard, Spark java etc) or Javascript (NodeJS + Express etc). 
 
-For your API - Neo4J communication use a Bolt driver (https://neo4j.com/docs/develo per-manual/current/drivers/).
+For your API - Neo4J communication use a Bolt driver (https://neo4j.com/docs/developer-manual/current/drivers/).
  
 When done, check your code into a github repo along with instructions on how to set up/use the API. 
 
@@ -53,4 +57,8 @@ To demonstrate API usage with any HTTP or GrapQL client (see bonus task #1 below
 * **Bonus task 1**: develop a simple UI that can be used directly from the web browser to drive the API - any stack will do, from plain HTML forms to JQuery to Angular/React/etc.
 
 * **Bonus task 2**: deploy your app along with a Neo4J instance to an AWS EC2 instance  (or any other cloud) so that we can see it in action without going through the setup process.
+
+## Developer notes
+
+A list of known issues that would be next steps to work are provided in TODO.txt.    
 

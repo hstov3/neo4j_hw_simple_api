@@ -1,0 +1,11 @@
+List of next steps in rough order of priority, most important first.
+
+ - Does not enforce uniqueness of the emp_id's, but assumes this uniqueness.  
+ - Refactor reading of properties to match deployment profile.
+ - Robustness improvements
+   - Better logging
+   - Error handling is very basic and needs to be more informative.
+   - Auto-commit transactions are used.  Should convert to use more performant, production oriented methods.
+   - Better security (passwords in config files)
+   - Configurability of Driver is currently limited to very basic use case
+   - etc.

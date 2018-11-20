@@ -9,16 +9,17 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Service layer class to interact to underlying store.  
+ * Service layer class to interact to underlying store.  This can be used for mocking the behavior of the graph store
+ * and is for test purposes only.  
  * 
  * @author Harry Stovall
  *
  */
-final class EmployeeService {
+final class MapBackedEmployeeService {
 	 
     private static final Map<Integer, Employee> employees = new HashMap<>();
 	 
-    EmployeeService() { }
+    MapBackedEmployeeService() { }
 	
     Employee findById(int id) {
     	return employees.get(id);

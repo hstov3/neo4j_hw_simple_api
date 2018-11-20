@@ -6,7 +6,6 @@ package hs.neo4j_hw.simple_api;
 /**
  * Simple POJO object containing Employee properties. 
  * 
- * 
  * @author Harry
  *
  */
