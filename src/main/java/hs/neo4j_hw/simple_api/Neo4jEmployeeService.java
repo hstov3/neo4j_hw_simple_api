@@ -4,6 +4,7 @@
 package hs.neo4j_hw.simple_api;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +17,7 @@ import org.neo4j.driver.v1.Statement;
 import org.neo4j.driver.v1.StatementResult;
 import org.neo4j.driver.v1.Values;
 import org.neo4j.driver.v1.summary.SummaryCounters;
+import org.neo4j.driver.v1.types.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +25,7 @@ import com.google.gson.Gson;
 
 
 /**
- * Service layer class to interact to underlying store, specifically Neo4j.  
+ * Service layer class to interact to underlying graph store, specifically Neo4j.  
  * 
  * @author Harry Stovall
  */
@@ -70,12 +72,14 @@ final class Neo4jEmployeeService implements AutoCloseable {
      */
     Employee add(final Employee empl) {
     	String propJson = new Gson().toJson(empl).toString();
+    	Map<String,Object> propMap = new HashMap<String,Object>();
+    	propMap = (Map<String, Object>) new Gson().fromJson(propJson, propMap.getClass());
     	try (Session session = neo4jDriver.session()) {
-    		StatementResult stmtRslt = session.run("CREATE (a:Employee {propJson})", 
-    				Values.parameters("propJson", propJson));
+    		StatementResult stmtRslt = session.run("CREATE (a:Employee {propMap})", 
+    				Values.parameters("propMap", propMap));
     		SummaryCounters counters = stmtRslt.summary().counters();
     		Statement stmt = stmtRslt.summary().statement();
-    		LOG.info("Executed Cypher statement <" + stmt.text() + ">, nodesCreated=" + counters.nodesCreated() 
+    		LOG.info("Executed Cypher statement <" + stmt.toString() + ">, nodesCreated=" + counters.nodesCreated() 
     		         + ", labelsAdded=" + counters.labelsAdded() + ", propertiesSet=" + counters.propertiesSet());
     	}
     	return empl;
@@ -93,13 +97,19 @@ final class Neo4jEmployeeService implements AutoCloseable {
     	List<Employee> listResult = new ArrayList<>();
     	try (Session session = neo4jDriver.session()) {
     		// REFACTOR maybe cleaner to use RETURN collect(a) and deal with collection of nodes in the result.  
-	    	StatementResult result = session.run( "MATCH (a:Employee) RETURN a" );
-	        while (result.hasNext()) {
-	            Record record = result.next();
-	            Map<String,Object> nodeMap = record.asMap();
-	            LOG.info("found node: " + nodeMap.toString());
-	            // REFACTOR would be better to do this with JSON.  This will work for now.
-	            Employee employeePOJO = new Employee(record.get("a.emp_id").asInt(), (String) record.get("a.name").asString());
+	    	StatementResult stmtRslt = session.run( "MATCH (a:Employee) RETURN a" );
+	    	Statement stmt = stmtRslt.summary().statement();
+	    	LOG.info("Executed Cypher statement <" + stmt.toString() + ">");
+	        while (stmtRslt.hasNext()) {
+	            Record record = stmtRslt.next();
+	            // REFACTOR need to validate that this is the best way to get the node
+	            Map<String,Object> rsltMap = record.asMap();
+	            Node node = (Node) rsltMap.get("a");
+	            LOG.info("found node: id=" + Long.toString(node.id()) +
+	            		", labels=" + node.labels().toString() + 
+	            		", properties=" + node.asMap().toString());
+	            // REFACTOR need to validate that this is get best way handle recreating the POJO
+	            Employee employeePOJO = new Employee(node.get("emp_id").asInt(), node.get("name").asString());
 	            listResult.add(employeePOJO);
 	        }
     	}

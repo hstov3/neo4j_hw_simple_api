@@ -1,9 +1,13 @@
 List of next steps in rough order of priority, most important first.
 
+ - Add method to delete nodes to help in automated testing.
+ - Should add automated testing at rest interface level.  
  - Does not enforce uniqueness of the emp_id's, but assumes this uniqueness.  
  - Refactor reading of properties to match deployment profile.
  - Robustness improvements
-   - Better logging
+   - Unit testing
+   - Proper shutdown of driver when server shuts down.  
+   - Better logging.  Currently have multiple flavors of logging.
    - Error handling is very basic and needs to be more informative.
    - Auto-commit transactions are used.  Should convert to use more performant, production oriented methods.
    - Better security (passwords in config files)

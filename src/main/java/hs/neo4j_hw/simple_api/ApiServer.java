@@ -39,6 +39,7 @@ class ApiServer {
 		    initializedEmployeeSvc = new Neo4jEmployeeService(neo4jCfg);
 		} catch (Exception e) {
 			LOG.error("failed to initialize EmployeeService object", e);
+			System.exit(-1);
 		}
 		this.employeeSvc = initializedEmployeeSvc;
 		registerRoutes();
@@ -60,6 +61,7 @@ class ApiServer {
 	    	LOG.error("failure handling Create Employee request", e);
 	    	res.status(500);
 	    	res.body(e.getMessage());
+	    	empl = null;
 	    }
 		return empl;
 	}
@@ -71,7 +73,7 @@ class ApiServer {
 		    List<Employee> employeeList = this.employeeSvc.findAll();
 		    gsonList = GSON.toJson(employeeList);
 		} catch (Exception e) {
-	    	LOG.error("failure handling Create Employee request", e);
+	    	LOG.error("failure handling Employee List request", e);
 	    	res.status(500);
 	    	res.body(e.getMessage());			
 		}
