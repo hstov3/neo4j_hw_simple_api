@@ -70,9 +70,11 @@ final class Neo4jEmployeeService implements AutoCloseable {
      * @param empl
      * @return the given object
      */
-    Employee add(final Employee empl) {
+    @SuppressWarnings("unchecked")
+	Employee add(final Employee empl) {
     	String propJson = new Gson().toJson(empl).toString();
     	Map<String,Object> propMap = new HashMap<String,Object>();
+    	// REFACTOR this line causes a warning, check for the best way to get this result.   
     	propMap = (Map<String, Object>) new Gson().fromJson(propJson, propMap.getClass());
     	try (Session session = neo4jDriver.session()) {
     		StatementResult stmtRslt = session.run("CREATE (a:Employee {propMap})", 
