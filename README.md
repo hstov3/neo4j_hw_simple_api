@@ -63,7 +63,7 @@ These instructions will provide a minimal development environment to run on a de
 
 2. If not done already, use **Neo4j Desktop** to create a project and a graph DB in that project.  Note the password that you assigned when creating the Graph DB.  
 
-3. Use git to clone the repo here.  Change to the root directory where you want to create the directory with the code from this repo and run the following:
+3. Use git to clone the repo.  Change to the root directory where you want to create the subdirectory containing the code from this repo and run the following:
 
 ```cmd
 $ git clone https://github.com/hstov3/neo4j_hw_simple_api.git
@@ -71,7 +71,7 @@ Cloning into 'neo4j_hw_simple_api'...
 . . .
 ```
 
-4.  At this point, one could open an IDE and set up a maven project to build and run the code within the IDE.  The rest of these instructions assume these steps are done from the command line.  Build the code:
+4.  At this point, one could open an IDE and set up a maven project to build and run the code within the IDE.  The rest of these instructions assume these steps are done from the command line.  Start with building the project jar file:
 
 ```cmd
 $ cd neo4j_hw_simple_api/
@@ -89,9 +89,10 @@ $ mvn package
 [INFO] ------------------------------------------------------------------------
 ```
 
-    The process should end with a `BUILD SUCCESS`.  This builds the `simple_api-<version>.jar` file.  
 
-5. For running from command line a maven assembly target is used to build a single jar file that contains all dependencies. Execute the following command:
+    The process should end with a `BUILD SUCCESS`.  This builds the `simple_api-<version>.jar` file, where "<version>" will be replaced with the actual version, e.g., "0.0.1".  
+
+5. To run from the command line, a maven assembly target is used to build a single jar file that contains all dependencies. Execute the following command:
 
 ```cmd
 $ mvn assembly:single
@@ -107,24 +108,25 @@ $ mvn assembly:single
 
     The process should end with a `BUILD SUCCESS` and builds the `simple_api-<version>-jar-with-dependencies.jar` file.
   
-6. Execute the following steps to configure the app to use the correct password.
+6. Execute the following steps to configure the app to use the correct Graph store password.
 
 ```cmd
 $ cd target
 $ "$JAVA_HOME/bin/jar" xvf simple_api-<version>.jar neo4j-driver-server.properties  # replace <version> with the correct value.
 $ vi neo4j-driver-server.properties    # or your favorite editor
-  # modify the value of the neo4j.driver.server.passwd property to match your setting above.
+  # modify the value of the neo4j.driver.server.passwd property to match your setting with Neo4j Desktop above.
+$ cd ..       # back to the project home directory.
 ```
 
 7.  Run the web app as follows:
 
 ```cmd
-$ java -cp "target;target/*" hs.neo4j_hw.simple_api.App
+$ java -cp "target;target/*" hs.neo4j_hw.simple_api.App    # use ":" instead of ";" for linux/mac
 ...
 [Thread-1] INFO org.eclipse.jetty.server.Server - Started @1333ms
 ```
 
-8.  Now the server is listening to requests.  Start the Postman app previously installed.  Import a pre-canned collection of http calls at [neo4j-hw-local-tests](https://www.getpostman.com/collections/159534c1be2cbfeb9421).  Results will be displayed in Postman.  A few INFO log entries will be displayed in the output of the program.  
+8.  Now the server is listening to requests.  Start the Postman app previously installed.  Import a pre-canned collection of http requests at [neo4j-hw-local-tests](https://www.getpostman.com/collections/159534c1be2cbfeb9421).  Results will be displayed in Postman.  A few INFO log entries will be displayed in the output of the program.  
 
 ## Server Deployment
 
